@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
+import axios from 'axios';
+
 
 class Details extends Component {
   constructor(props) {
@@ -9,13 +11,15 @@ class Details extends Component {
       lastName: '',
       skills: ''
     }
+
     this.addDetails = this.addDetails.bind(this);
     this.sortDetails = this.sortDetails.bind(this);
   }
+
   addDetails() {
-    let skill = this.state.skills.split(',');
+    let skills = this.state.skills.split(',');
     let text = this.state;
-    text['skills'] = skill;
+    text['skills'] = skills;
     this.props.showDetails(this.state);
     this.setState({
       firstName: '',
@@ -24,11 +28,12 @@ class Details extends Component {
     })
   }
   sortDetails() {
-    let sortitems = this.state;
-    this.setState ({
-    })
+    // let sortitems = this.state;
+    // this.setState ({
+    // })
   }
-
+  
+  
   render() {
     return (
       <div className="">
@@ -36,7 +41,8 @@ class Details extends Component {
           <input className="" type="text" onChange={(event) => this.setState({ firstName: event.target.value })} />
           <input className="" type="text" onChange={(event) => this.setState({ lastName: event.target.value })} />
           <input className="" type="text" onChange={(event) => this.setState({ skills: event.target.value })} />
-          <button className='button' onClick={this.addDetails}>Add</button>
+          <button className='button' onClick={this.addDetails}>Add</button><br />
+          <input type="text" className="input" onClick={this.searchBar} placeholder="search"/>
         </div>
       </div>
     )
@@ -54,22 +60,44 @@ class App extends Component {
         {
           'firstName': 'Pramod',
           'lastName': 'Ray',
-          'skills': ['Python', 'HTML', 'CSS']
+          'skills_list': ['Python', 'HTML', 'CSS']
         },
         {
           'firstName': 'Sachin',
           'lastName': 'Suresh',
-          'skills': ['Python', 'HTML', 'CSS', 'CAT']
+          'skills_list': ['Python', 'HTML', 'CSS', 'CAT']
+        },
+        {
+          'firstName': 'Saniya',
+          'lastName': 'Iqbal',
+          'skills_list': ['Python', 'HTML', 'CSS', 'Django','Git']
         },
         {
           'firstName': 'Samarth',
           'lastName': 'Hegde',
-          'skills': ['Python', 'Git', 'CSS']
+          'skills_list': ['Python', 'Git', 'CSS']
         }
       ]
     }
+    
     this.showDetails = this.showDetails.bind(this);
     this.sortDetails = this.sortDetails.bind(this);
+    this.sortBySkills = this.sortBySkills.bind(this);
+  }
+
+  sortBySkills() {
+    let sortSkills = this.state.students.sort(function(a,b){
+      if (a.skills_list.length > b.skills_list.length) {
+        return -1;
+      }
+      if (a.skills_list.length < b.skills_list.length){
+      return 1;
+      }
+      return 0;
+    });
+    this.setState({
+      students:sortSkills
+    });
   }
 
   showDetails(note) {
@@ -77,7 +105,7 @@ class App extends Component {
       students: [...this.state.students, note]
     });
   }
-  
+
   sortDetails() {
     let sortitems = this.state.students.sort(function(a,b){
       return a.firstName.localeCompare(b.firstName)})
@@ -86,7 +114,12 @@ class App extends Component {
       });
   }
 
-  
+  componentDidMount() {
+    axios.get("http://127.0.0.1:8000/student/student/").then(res => {
+      this.setState({
+      students:res.data});
+      })}
+
   render() {
     return (
       <div className="App">
@@ -96,15 +129,16 @@ class App extends Component {
             <tr>
               <th onClick={this.sortDetails}>Firstname</th>
               <th>Lastname</th>
-              <th>Skills</th>
+              <th  onClick={this.sortBySkills}>Skills</th>
             </tr>
           </thead>
           <tbody>
+            
             {this.state.students.map((item, index) => (
               <tr key={index}>
                 <td>{item.firstName}</td>
                 <td>{item.lastName}</td>
-                <td><ul>{item.skills.map((item, index) => (
+                <td><ul>{item.skills_list.map((item, index) => (
                   <ol key={item}>
                     <ol>{item}</ol>
                   </ol>
