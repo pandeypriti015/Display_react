@@ -11,5 +11,6 @@ class Student(models.Model):
     def __str__(self):
         return self.fristName
 
+
     def skills_list(self):
         return [x.strip() for x in self.skills.split(',')]
