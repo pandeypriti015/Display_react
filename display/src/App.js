@@ -13,13 +13,13 @@ class Details extends Component {
     }
 
     this.addDetails = this.addDetails.bind(this);
-    this.sortDetails = this.sortDetails.bind(this);
+    // this.sortDetails = this.sortDetails.bind(this);
   }
 
   addDetails() {
-    let skills = this.state.skills.split(',');
-    let text = this.state;
-    text['skills'] = skills;
+    // let skills = this.state.skills.split(',');
+    // let text = this.state;
+    // text['skills'] = skills;
     this.props.showDetails(this.state);
     this.setState({
       firstName: '',
@@ -27,12 +27,6 @@ class Details extends Component {
       skills: ''
     })
   }
-  sortDetails() {
-    // let sortitems = this.state;
-    // this.setState ({
-    // })
-  }
-  
   
   render() {
     return (
@@ -42,12 +36,13 @@ class Details extends Component {
           <input className="" type="text" onChange={(event) => this.setState({ lastName: event.target.value })} />
           <input className="" type="text" onChange={(event) => this.setState({ skills: event.target.value })} />
           <button className='button' onClick={this.addDetails}>Add</button><br />
-          <input type="text" className="input" onClick={this.searchBar} placeholder="search"/>
+          {/* <input type="text" className="input" onClick={this.searchBar} placeholder="search"/> */}
         </div>
       </div>
     )
   }
 }
+
 
 class App extends Component {
   constructor(props) {
@@ -56,28 +51,30 @@ class App extends Component {
       firstName: '',
       lastName: '',
       skills: '',
-      students: [
-        {
-          'firstName': 'Pramod',
-          'lastName': 'Ray',
-          'skills_list': ['Python', 'HTML', 'CSS']
-        },
-        {
-          'firstName': 'Sachin',
-          'lastName': 'Suresh',
-          'skills_list': ['Python', 'HTML', 'CSS', 'CAT']
-        },
-        {
-          'firstName': 'Saniya',
-          'lastName': 'Iqbal',
-          'skills_list': ['Python', 'HTML', 'CSS', 'Django','Git']
-        },
-        {
-          'firstName': 'Samarth',
-          'lastName': 'Hegde',
-          'skills_list': ['Python', 'Git', 'CSS']
-        }
-      ]
+      students:[],
+
+      // students: [
+      //   {
+      //     'firstName': 'Pramod',
+      //     'lastName': 'Ray',
+      //     'skills_list': ['Python', 'HTML', 'CSS']
+      //   },
+      //   {
+      //     'firstName': 'Sachin',
+      //     'lastName': 'Suresh',
+      //     'skills_list': ['Python', 'HTML', 'CSS', 'CAT']
+      //   },
+      //   {
+      //     'firstName': 'Saniya',
+      //     'lastName': 'Iqbal',
+      //     'skills_list': ['Python', 'HTML', 'CSS', 'Django','Git']
+      //   },
+      //   {
+      //     'firstName': 'Samarth',
+      //     'lastName': 'Hegde',
+      //     'skills_list': ['Python', 'Git', 'CSS']
+      //   }
+      // ]
     }
     
     this.showDetails = this.showDetails.bind(this);
@@ -100,10 +97,13 @@ class App extends Component {
     });
   }
 
+
   showDetails(note) {
-    this.setState({
-      students: [...this.state.students, note]
-    });
+    axios.post("http://127.0.0.1:8000/student/student/create/",note)
+
+    // this.setState({
+    //   students: [...this.state.students, note]
+    // });
   }
 
   sortDetails() {
@@ -119,7 +119,12 @@ class App extends Component {
       this.setState({
       students:res.data});
       })}
+  
+  DeleteDetails(id) {
+    axios.delete("http://127.0.0.1:8000/student/student/"+id.toString()+"/delete")
 
+  }
+  
   render() {
     return (
       <div className="App">
@@ -130,6 +135,8 @@ class App extends Component {
               <th onClick={this.sortDetails}>Firstname</th>
               <th>Lastname</th>
               <th  onClick={this.sortBySkills}>Skills</th>
+              <th>Operation</th>
+
             </tr>
           </thead>
           <tbody>
@@ -138,12 +145,19 @@ class App extends Component {
               <tr key={index}>
                 <td>{item.firstName}</td>
                 <td>{item.lastName}</td>
-                <td><ul>{item.skills_list.map((item, index) => (
-                  <ol key={item}>
-                    <ol>{item}</ol>
-                  </ol>
-                ))}</ul>
+              <td>
+            <ul>
+              {/* {console.log("item: ",item)} {console.log("skills_array",item.skills_aray)} */}
+              {item.skills_array.map((item,index)=>
+            <li key={index}>{item}
+              
+            </li>)}
+            </ul>
                 </td>
+          
+                  <td>
+                    <button onClick={(event)=>this.DeleteDetails(item.id)}>DELETE</button> 
+                    </td>
               </tr>
             )
             )
