@@ -6,4 +6,6 @@ A full stack application was built using ReactJs and django. Used REST Api for c
 
 I have created one branch display.
 
-for clone this project
+for clone this project:https://github.com/pandeypriti015/Display_react.git
+
+
