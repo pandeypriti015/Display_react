@@ -1,4 +1,4 @@
-# Display_react
+# Student_List
 
 Displaying the student records which includes first name, last name and skills. So here I have used django and ReactJs for the project.
 
